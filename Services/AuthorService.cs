@@ -1,11 +1,9 @@
 using LibraryManagement.Models;
 using LibraryManagement.Repositories;
-using System;
-using System.Collections.Generic;
 
 namespace LibraryManagement.Services;
 
-public class AuthorService
+public class AuthorService : IAuthorService
 {
     private readonly IAuthorRepository _repo;
 
@@ -18,6 +16,7 @@ public class AuthorService
     {
         if (string.IsNullOrWhiteSpace(author.Name))
             throw new ArgumentException("Имя автора не может быть пустым.");
+
         return _repo.Add(author);
     }
 
@@ -25,6 +24,7 @@ public class AuthorService
     {
         if (string.IsNullOrWhiteSpace(author.Name))
             throw new ArgumentException("Имя автора не может быть пустым.");
+
         return _repo.Update(author);
     }
 

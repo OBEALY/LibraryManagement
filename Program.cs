@@ -1,4 +1,5 @@
-﻿using LibraryManagement.Repositories;
+﻿using LibraryManagement.Middlewares;
+using LibraryManagement.Repositories;
 using LibraryManagement.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,12 +11,16 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "Library Management API", Version = "v1" });
 });
 
+// Регистрация репозиториев и сервисов
 builder.Services.AddSingleton<IAuthorRepository, AuthorRepository>();
 builder.Services.AddSingleton<IBookRepository, BookRepository>();
-builder.Services.AddSingleton<AuthorService>();
-builder.Services.AddSingleton<BookService>();
+builder.Services.AddSingleton<IAuthorService, AuthorService>();
+builder.Services.AddSingleton<IBookService, BookService>();
 
 var app = builder.Build();
+
+// Глобальный обработчик исключений
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

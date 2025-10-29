@@ -1,8 +1,6 @@
 using LibraryManagement.Models;
 using LibraryManagement.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 
 namespace LibraryManagement.Controllers;
 
@@ -10,9 +8,9 @@ namespace LibraryManagement.Controllers;
 [Route("api/[controller]")]
 public class BooksController : ControllerBase
 {
-    private readonly BookService _service;
+    private readonly IBookService _service;
 
-    public BooksController(BookService service) => _service = service;
+    public BooksController(IBookService service) => _service = service;
 
     [HttpGet]
     public IActionResult GetAll() => Ok(_service.GetAll());
@@ -27,19 +25,8 @@ public class BooksController : ControllerBase
     [HttpPost]
     public IActionResult Create(Book book)
     {
-        try
-        {
-            var created = _service.Add(book);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var created = _service.Add(book);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     [HttpPut("{id:int}")]
@@ -47,20 +34,14 @@ public class BooksController : ControllerBase
     {
         if (id != book.Id) return BadRequest("ID mismatch");
 
-        try
-        {
-            if (!_service.Update(book)) return NotFound();
-            return NoContent();
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var updated = _service.Update(book);
+        return updated ? NoContent() : NotFound();
     }
 
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
-        return _service.Delete(id) ? NoContent() : NotFound();
+        var deleted = _service.Delete(id);
+        return deleted ? NoContent() : NotFound();
     }
 }
