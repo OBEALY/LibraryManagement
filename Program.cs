@@ -11,7 +11,6 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "Library Management API", Version = "v1" });
 });
 
-// Регистрация репозиториев и сервисов
 builder.Services.AddSingleton<IAuthorRepository, AuthorRepository>();
 builder.Services.AddSingleton<IBookRepository, BookRepository>();
 builder.Services.AddSingleton<IAuthorService, AuthorService>();
@@ -19,7 +18,6 @@ builder.Services.AddSingleton<IBookService, BookService>();
 
 var app = builder.Build();
 
-// Глобальный обработчик исключений
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.UseSwagger();
